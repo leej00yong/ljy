@@ -1,0 +1,446 @@
+using System;
+
+class Player
+{
+    public int Hp { get; set; }
+    public int Atk { get; set; }
+    public int Def { get; set; }
+    public int Spell { get; set; }
+    public int Money { get; set; }
+
+    public Player()
+    {
+        Hp = 20;
+        Atk = 1;
+        Def = 1;
+        Spell = 1;
+        Money = 0;
+    }
+
+    public void VisitLibrary()
+    {
+        if (Money < 10)
+        {
+            Console.WriteLine("\n돈이 부족합니다");
+            Console.WriteLine($"도서관 1회 이용 금액은 10골드, {10 - Money}골드 부족합니다.");
+        }
+        else
+        {
+            int e = Money / 10;
+            Console.WriteLine("\n도서관은 10골드 당 spell [5]를 올려줍니다");
+            Console.WriteLine($"주문력을 총 {e}번 올릴 수 있습니다.\n몇 번 올리시겠습니까? : ");
+            int num = int.Parse(Console.ReadLine());
+            if (num > e)
+            {
+                Console.WriteLine("\n돈이 부족합니다");
+            }
+            else
+            {
+                Spell += num * 5;
+                Money -= num * 10;
+                Console.WriteLine($"{num * 10}골드를 사용했습니다.");
+                Console.WriteLine($"현재 골드 : {Money}골드");
+                Console.WriteLine($"주문력이 {num * 5}만큼 올랐습니다.");
+            }
+        }
+        Console.WriteLine("-----------------------------------------");
+    }
+
+    public void HuntTrolls()
+    {
+        Console.Write("트롤은 자동 토벌이 가능합니다.\n몇 번 토벌하시겠습니까? : ");
+        int trollnum = int.Parse(Console.ReadLine());
+        Console.WriteLine("\n트롤을 잡았습니다.");
+        Console.WriteLine($"체력 증가합니다. +{10 * trollnum}");
+        Console.WriteLine($"공격력이 증가합니다. +{10 * trollnum}");
+        Console.WriteLine($"방어력이 증가합니다. +{10 * trollnum}");
+        Console.WriteLine($"{10 * trollnum} 골드를 획득했습니다\n\n");
+        Hp += 10 * trollnum;
+        Atk += 10 * trollnum;
+        Def += 10 * trollnum;
+        Money += 10 * trollnum;
+        Console.WriteLine($"체력 : {Hp}");
+        Console.WriteLine($"공격력 : {Atk}");
+        Console.WriteLine($"방어력 : {Def}");
+        Console.WriteLine($"주문력 : {Spell}");
+        Console.WriteLine($"골드 : {Money}\n\n");
+        Console.WriteLine("-----------------------------------------");
+    }
+
+    public void HuntDragon()
+    {
+        if (Hp < 100)
+        {
+            Console.WriteLine("\n체력이 부족하여 사냥이 불가능합니다.");
+            Console.WriteLine($"추천 체력 : 100\n체력이 {100 - Hp} 부족합니다.");
+        }
+        else
+        {
+            int t = Hp;
+            BattleDragon(ref t);
+            if (t != Hp)
+            {
+                Console.WriteLine($"체력 증가합니다.+{100}");
+                Console.WriteLine($"공격력이 증가합니다.+{100}");
+                Console.WriteLine($"방어력이 증가합니다. +{100}");
+                Console.WriteLine($"주문력이 증가합니다. +{100}");
+                Console.WriteLine($"{100} 골드를 획득했습니다\n\n");
+                Hp += 100;
+                Atk += 100;
+                Def += 100;
+                Spell += 100;
+                Money += 100;
+                Console.WriteLine($"체력 : {Hp}");
+                Console.WriteLine($"공격력 : {Atk}");
+                Console.WriteLine($"방어력 : {Def}");
+                Console.WriteLine($"주문력 : {Spell}");
+                Console.WriteLine($"골드 : {Money}\n\n");
+            }
+        }
+        Console.WriteLine("-----------------------------------------");
+    }
+
+    public void HuntLucifer()
+    {
+        if (Hp < 250)
+        {
+            Console.WriteLine("\n체력이 부족하여 사냥이 불가능합니다.");
+            Console.WriteLine($"추천 체력 : 250\n체력이 {250 - Hp} 부족합니다.");
+        }
+        else
+        {
+            int t = Hp;
+            BattleLucifer(ref t);
+            if (t != Hp)
+            {
+                Console.WriteLine("\n게임 종료\n");
+                return;
+            }
+        }
+        Console.WriteLine("-----------------------------------------");
+    }
+
+    void BattleDragon(ref int hp)
+    {
+        int Dragonhp = 300;
+        int Dragonatk = 30;
+        int Dragondef = 50;
+        int Dragonspell = 40;
+        int t = Hp;//hp 초기화
+        Random rand = new Random();
+
+        while (true)
+        {
+            int dragonAction = rand.Next(1, 4);
+            int playerAction = GetPlayerAction();
+
+            switch (playerAction)
+            {
+                case 1: // 공격
+                    if (dragonAction == 1) // Dragon : [공격]
+                    {
+                        Console.WriteLine("Dragon : [공격]");
+                        Console.WriteLine("비겼습니다.");
+                        Console.WriteLine($"Dragon HP : {Dragonhp}");
+                        Console.WriteLine($"Warrior HP : {Hp}");
+                    }
+                    else if (dragonAction == 2) // Dragon은 방어
+                    {
+                        Console.WriteLine("Dragon : [방어]");
+                        Console.WriteLine("Dragon이 [방어]에 성공했습니다.");
+                        hp -= Dragondef;
+                        Console.WriteLine($"Warrior에게 {Dragondef}데미지");
+                        Console.WriteLine($"Dragon HP : {Dragonhp}");
+                        Console.WriteLine($"Warrior HP : {Hp}");
+                    }
+                    else if (dragonAction == 3) // Dragon : 브레스
+                    {
+                        Console.WriteLine("Dragon : [브레스]");
+                        Console.WriteLine("Warrior가 [공격]를 성공했습니다.");
+                        Dragonhp -= Atk;
+                        Console.WriteLine($"Dragon에게 {Atk}데미지");
+                        Console.WriteLine($"Dragon HP : {Dragonhp}");
+                        Console.WriteLine($"Warrior HP : {Hp}");
+                    }
+                    break;
+
+                case 2: // 방어
+                    if (dragonAction == 1) // Dragon이 공격
+                    {
+                        Console.WriteLine("Dragon : [공격]");
+                        Console.WriteLine("Warrior가 [방어]에 성공했습니다.");
+                        Dragonhp -= Def;
+                        Console.WriteLine($"Dragon HP : {Dragonhp}");
+                        Console.WriteLine($"Warrior HP : {Hp}");
+                    }
+                    else if (dragonAction == 2) // Dragon은 방어
+                    {
+                        Console.WriteLine("Dragon : [방어]");
+                        Console.WriteLine("아무일도 일어나지 않았다.");
+                        Console.WriteLine($"Dragon HP : {Dragonhp}");
+                        Console.WriteLine($"Warrior HP : {Hp}");
+                    }
+                    else if (dragonAction == 3) // Dragon은 마법 사용
+                    {
+                        Console.WriteLine("Dragon : [브레스]");
+                        Console.WriteLine("Dragon이 [브레스]에 성공했습니다.");
+                        Hp -= Dragonspell;
+                        Console.WriteLine($"Warrior에게 {Dragonspell}데미지");
+                        Console.WriteLine($"Dragon HP : {Dragonhp}");
+                        Console.WriteLine($"Warrior HP : {Hp}");
+                    }
+                    break;
+
+                case 3: // 마법 사용
+                    if (dragonAction == 1) // Dragon이 공격
+                    {
+                        Console.WriteLine("Dragon : [공격]");
+                        Console.WriteLine("Dragon이 [공격]에 성공했습니다.");
+                        Hp -= Dragonatk;
+                        Console.WriteLine($"Warrior에게 {Dragonatk}데미지");
+                        Console.WriteLine($"Dragon HP : {Dragonhp}");
+                        Console.WriteLine($"Warrior HP : {Hp}");
+                    }
+                    else if (dragonAction == 2) // Dragon은 방어
+                    {
+                        Console.WriteLine("Dragon : [방어]");
+                        Console.WriteLine("Warrior가 [마법]을 성공했습니다.");
+                        Dragonhp -= Spell;
+                        Console.WriteLine($"Dragon에게 {Spell}데미지");
+                        Console.WriteLine($"Dragon HP : {Dragonhp}");
+                        Console.WriteLine($"Warrior HP : {Hp}");
+                    }
+                    else if (dragonAction == 3) // Dragon은 마법 사용
+                    {
+                        Console.WriteLine("Dragon : [브레스]");
+                        Console.WriteLine("마법이 상쇄되었습니다.");
+                        Console.WriteLine($"Dragon HP : {Dragonhp}");
+                        Console.WriteLine($"Warrior HP : {Hp}");
+                    }
+                    break;
+                default: // 잘못 입력
+                    Console.WriteLine("잘못 입력 하셨습니다. 다시 입력 하세요\n\n");
+                    break;
+            }
+
+            // 전투 종료 조건 확인
+            if (Dragonhp <= 0)
+            {
+                Console.WriteLine("Warrior가 Dragon을 처치했습니다.");
+                Hp = t;
+                return;
+            }
+            else if (hp <= 0)
+            {
+                Console.WriteLine("Dragon이 승리 했습니다.\n패배하셨습니다. 마을로 돌아갑니다.\n\n");
+                Hp = t;
+                return;
+            }
+        }
+    }
+
+
+    void BattleLucifer(ref int hp)
+    {
+        int Luciferhp = 3000;
+        int Luciferatk = 150;
+        int Luciferdef = 80;
+        int Luciferspell = 200;
+        int t = Hp;//hp 초기화
+        int count = 0, magic = 5; // 주문 카운트, 발동 조건
+
+        while (true)
+        {
+            int luciferAction = GetRandomAction();
+            int playerAction = GetPlayerAction();
+
+            switch (playerAction)
+            {
+                case 1: // 공격
+                    if (luciferAction == 1) // Lucifer : 공격
+                    {
+                        Console.WriteLine("Lucifer : [공격]");
+                        Console.WriteLine("비겼습니다.");
+                        Console.WriteLine($"Dragon HP : {Luciferhp}");
+                        Console.WriteLine($"Warrior HP : {Hp}");
+                    }
+                    else if (luciferAction == 2) // Lucifer : 방어
+                    {
+                        Console.WriteLine("Lucifer : [방어]");
+                        Console.WriteLine("Lucifer가 [방어]에 성공했습니다.");
+                        Hp -= Luciferdef;
+                        Console.WriteLine($"Warrior에게 [{Luciferdef}] 데미지");
+                        Console.WriteLine($"Lucifer HP : {Luciferhp}");
+                        Console.WriteLine($"Warrior HP : {Hp}");
+                    }
+                    else if (luciferAction == 3) // Lucifer : 마법 사용
+                    {
+                        Console.WriteLine("Lucifer : [마법]");
+                        count++;
+                        if (count == magic)
+                        { //5턴
+                            hp -= Luciferspell;
+                            Console.WriteLine($"Warrior에게 [{Luciferspell}] 데미지");
+                            Console.WriteLine($"Lucifer HP : {Luciferhp}");
+                            Console.WriteLine($"Warrior HP : {Hp}");
+                            count = 0;
+                        }
+                        else
+                        { //5턴 전
+                            Console.WriteLine($"{magic - count}턴 남았습니다");
+                            Console.WriteLine("Warrior가 [공격]를 성공했습니다.");
+                            Luciferhp -= Atk;
+                            Console.WriteLine($"Lucifer에게 [{Atk}] 데미지");
+                            Console.WriteLine($"Lucifer HP : {Luciferhp}");
+                            Console.WriteLine($"Warrior HP : {Hp}");
+                        }
+                    }
+                    break;
+
+                case 2: // 방어
+                    if (luciferAction == 1) // Lucifer가 공격
+                    {
+                        Console.WriteLine("Lucifer : [공격]");
+                        Console.WriteLine("Warrior가 [방어]에 성공했습니다.");
+                        Luciferhp -= Def;
+                        Console.WriteLine($"Lucifer HP : {Luciferhp}");
+                        Console.WriteLine($"Warrior HP : {Hp}");
+                    }
+                    else if (luciferAction == 2) // Lucifer는 방어
+                    {
+                        Console.WriteLine("Lucifer : [방어]");
+                        Console.WriteLine("아무일도 일어나지 않았다.");
+                        Console.WriteLine($"Lucifer HP : {Luciferhp}");
+                        Console.WriteLine($"Warrior HP : {Hp}");
+                    }
+                    else if (luciferAction == 3) // Lucifer는 마법 사용
+                    {
+                        Console.WriteLine("Lucifer : [마법]");
+                        count++;
+                        if (count == magic)
+                        { //5턴
+                            hp -= Luciferspell;
+                            Console.WriteLine($"Warrior에게 [{Luciferspell}] 데미지");
+                            Console.WriteLine($"Lucifer HP : {Luciferhp}");
+                            Console.WriteLine($"Warrior HP : {Hp}");
+                            count = 0;
+                        }
+                        else
+                        { //5턴 전
+                            Console.WriteLine($"{magic - count}턴 남았습니다");
+                            Console.WriteLine("아무일도 일어나지 않았다.");
+                            Console.WriteLine($"Lucifer HP : {Luciferhp}");
+                            Console.WriteLine($"Warrior HP : {Hp}");
+                        }
+                    }
+                    break;
+
+                case 3: // 마법 사용
+                    if (luciferAction == 1) // Lucifer가 공격
+                    {
+                        Console.WriteLine("Lucifer : [공격]");
+                        Console.WriteLine("Lucifer가 [공격]에 성공했습니다.");
+                        Hp -= Luciferatk;
+                        Console.WriteLine($"Warrior에게 [{Luciferatk}] 데미지");
+                        Console.WriteLine($"\nLucifer HP : {Luciferhp}");
+                        Console.WriteLine($"Warrior HP : {Hp}");
+                    }
+                    else if (luciferAction == 2) // Lucifer는 방어
+                    {
+                        Console.WriteLine("Lucifer : [마법]");
+                        count++;
+                        if (count == magic)
+                        {  //5턴
+                            hp -= Luciferspell;
+                            Console.WriteLine($"Warrior에게 [{Luciferspell}] 데미지");
+                            Console.WriteLine($"\nLucifer HP : {Luciferhp}");
+                            Console.WriteLine($"Warrior HP : {Hp}");
+                            count = 0;
+                        }
+                        else
+                        { //5턴 전
+                            Console.WriteLine($"{magic - count}턴 남았습니다");
+                            Console.WriteLine("Warrior가 [마법]에 성공했습니다.");
+                            Luciferhp -= Spell;
+                            Console.WriteLine($"Lucifer에게 [{Spell}] 데미지\n");
+                            Console.WriteLine($"Lucifer HP : {Luciferhp}");
+                            Console.WriteLine($"Warrior HP : {Hp}");
+                        }
+                    }
+                    break;
+                default: // 잘못 입력
+                    Console.WriteLine("잘못 입력 하셨습니다. 다시 입력 하세요\n\n");
+                    break;
+            }
+
+            // 전투 종료 조건 확인
+            if (Luciferhp <= 0)
+            {
+                Console.WriteLine("\nWarrior가 승리 했습니다.\n승리하셨습니다. 마을로 돌아갑니다.\n\n");
+                Hp = t;
+                return;
+            }
+            else if (hp <= 0)
+            {
+                Console.WriteLine("\nLucifer가 승리 했습니다.\n패배하셨습니다. 마을로 돌아갑니다.\n\n");
+                Hp = t;
+                return;
+            }
+        }
+    }
+
+    int GetRandomAction()
+    {
+        Random rand = new Random();
+        return rand.Next(1, 4);
+    }
+
+    int GetPlayerAction()
+    {
+        Console.WriteLine("\n##############################\n");
+        Console.WriteLine("########## 전투 시작 #########\n");
+        Console.WriteLine("##############################\n");
+        Console.WriteLine("1. 공격  2. 방어  3. 마법");
+        Console.Write("어떤 행동을 하시겠습니까?: ");
+        return int.Parse(Console.ReadLine());
+    }
+
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Player player = new Player();
+
+        while (true)
+        {
+            Console.WriteLine("\n\t\t\t행동을 선택해주세요\n");
+            Console.Write("1. 도서관  2. troll 사냥 3. dragon 사냥 4. Lucifer 토벌 (종료 : 0) : ");
+            int move = int.Parse(Console.ReadLine());
+
+            switch (move)
+            {
+                case 1:
+                    player.VisitLibrary();
+                    break;
+                case 2:
+                    player.HuntTrolls();
+                    break;
+                case 3:
+                    player.HuntDragon();
+                    break;
+                case 4:
+                    player.HuntLucifer();
+                    break;
+                case 0:
+                    Console.WriteLine("-----------------------------------------");
+                    Console.WriteLine("\n프로그램 종료\n");
+                    return;
+                default:
+                    Console.WriteLine("\n잘못 입력 하셨습니다. 다시 입력 하세요\n\n");
+                    break;
+            }
+        }
+    }
+}
